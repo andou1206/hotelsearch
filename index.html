@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ホテル検索</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+    <h1>日本地図からホテル検索</h1>
+    <div id="map" style="height: 500px;"></div>
+
+    <script>
+        // Leaflet地図の初期化
+        var map = L.map('map').setView([35.6895, 139.6917], 10); // 東京を中心に表示
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // ホテルデータの取得とマップへの表示
+        fetch('hotels.json')
+            .then(response => response.json())
+            .then(data => {
+                data.hotels.forEach(hotel => {
+                    L.marker([hotel.lat, hotel.lng]).addTo(map)
+                        .bindPopup(hotel.name);
+                });
+            })
+            .catch(error => console.error('Error loading hotel data:', error));
+    </script>
+</body>
+</html>
