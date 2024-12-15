@@ -14,6 +14,7 @@
     <div>
         <input type="text" id="address" placeholder="住所を入力">
         <button id="searchButton">検索</button>
+        <button id="gpsButton">現在地</button>
     </div>
     <div id="map" style="height: 500px;"></div>
 
@@ -31,6 +32,36 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+
+        // ページ読み込み時に位置情報を取得
+        window.onload = function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var userLat = position.coords.latitude;
+                    var userLng = position.coords.longitude;
+                    map.setView([userLat, userLng], 15); // ユーザーの位置にズームイン
+                }, function(error) {
+                    console.log('位置情報を取得できませんでした:', error);
+                });
+            } else {
+                alert('Geolocationはこのブラウザではサポートされていません。');
+            }
+        };
+
+        // Geolocation APIを使用してユーザーの位置情報を取得
+        document.getElementById('gpsButton').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var userLat = position.coords.latitude;
+                    var userLng = position.coords.longitude;
+                    map.setView([userLat, userLng], 15); // ユーザーの位置にズームイン
+                }, function() {
+                    alert('位置情報を取得できませんでした。');
+                });
+            } else {
+                alert('Geolocationはこのブラウザではサポートされていません。');
+            }
+        });
 
         // Geocoderの追加
         var geocoder = L.Control.Geocoder.nominatim();
